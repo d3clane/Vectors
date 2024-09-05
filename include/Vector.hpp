@@ -12,7 +12,8 @@ class Vector
     double length_;
 
 public:
-    Vector(double angle, double length) : angle_(angle), length_(length) {}
+    // TODO: think about isfinite
+    Vector(double angle, double length) : angle_(angle), length_(length) { }
 
     void setAngle(double angle);
     void rotate  (double deltaAngle);
@@ -22,6 +23,13 @@ public:
 
     int getDx () const;
     int getDy () const;
+
+    Vector operator + (const Vector& other) const;
+    Vector operator - (const Vector& other) const;
+    Vector operator * (const double coeff)  const;
+    Vector operator / (const double coeff)  const;
+
+    double operator ^ (const Vector& other) const;
 };
 
 } // Scene
