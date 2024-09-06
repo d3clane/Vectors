@@ -6,6 +6,8 @@
 namespace Graphics
 {
 
+class Event;
+
 struct Point
 {
     int x, y;
@@ -24,6 +26,8 @@ class Window
 {
 private:
     sf::RenderWindow window_;
+    unsigned int width_, height_;
+
 
 public:
     Window(int width, int height, const char* title);
@@ -35,6 +39,11 @@ public:
     void drawLine(Line line);
 
     void display();
+
+    unsigned int getWidth () const;
+    unsigned int getHeight() const;
+
+    bool pollEvent(Event& event);
 };
 
 } // Graphics

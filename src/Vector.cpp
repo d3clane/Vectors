@@ -9,10 +9,10 @@ namespace Scene
 namespace
 {
 
-double getLength(double dx, double dy);
-double getAngle (double dx, double dy);
+double calcLength(double dx, double dy);
+double calcAngle (double dx, double dy);
 
-double getLength(double dx, double dy)
+double calcLength(double dx, double dy)
 {
     assert(std::isfinite(dx));
     assert(std::isfinite(dy));
@@ -20,15 +20,19 @@ double getLength(double dx, double dy)
     return sqrt(dx * dx + dy * dy);
 }
 
-double getAngle (double dx, double dy)
+double calcAngle (double dx, double dy)
 {
     assert(std::isfinite(dx));
     assert(std::isfinite(dy));
-    assert(dx != 0);
 
     return atan2(dy, dx);
 }
 
+} // anonymous namespace
+
+Vector::Vector(double dx, double dy, bool settingInDxDy) : 
+    angle_(calcAngle(dx, dy)), length_(calcLength(dx, dy)) 
+{
 }
 
 void Vector::setAngle(double angle)
@@ -43,22 +47,49 @@ void Vector::rotate(double deltaAngle)
 
 void Vector::setLength(double length)
 {
-    length_ = length;
+    assert(std::isfinite(length));
+
+    length_ = length >= 0 ? length : 0;
 }
 
 void Vector::scale(double deltaLength)
 {
+    assert(std::isfinite(deltaLength));
+
     length_ += deltaLength;
+
+    if (length_ < 0)
+        length_ = 0;
 }
 
-int Vector::getDx() const
+double Vector::getDx() const
 {
-    return (int)(length_ * std::cos(angle_));
+    return length_ * std::cos(angle_);
 }
 
-int Vector::getDy() const
+double Vector::getDy() const
 {
-    return (int)(length_ * std::sin(angle_));
+    return length_ * std::sin(angle_);
+}
+
+double Vector::getAngle()  const
+{
+    return angle_;
+}
+
+double Vector::getLength() const
+{
+    return length_;
+}
+
+Vector Vector::GetNormal() const
+{
+    return Vector(angle_ + M_PI_2, 1.);
+}
+
+Vector Vector::operator - () const
+{
+    return Vector(angle_ + M_PI, length_);
 }
 
 Vector Vector::operator + (const Vector& other) const
@@ -66,7 +97,7 @@ Vector Vector::operator + (const Vector& other) const
     double dx = getDx() + other.getDx();
     double dy = getDy() + other.getDy();
 
-    return Vector(getAngle(dx, dy), getLength(dx, dy));
+    return Vector(calcAngle(dx, dy), calcLength(dx, dy));
 }
 
 Vector Vector::operator - (const Vector& other) const
@@ -74,7 +105,7 @@ Vector Vector::operator - (const Vector& other) const
     double dx = getDx() - other.getDx();
     double dy = getDy() - other.getDy();
 
-    return Vector(getAngle(dx, dy), getLength(dx, dy));
+    return Vector(calcAngle(dx, dy), calcLength(dx, dy));
 }
 
 Vector Vector::operator * (const double coeff)  const

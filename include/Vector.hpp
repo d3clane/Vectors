@@ -14,6 +14,7 @@ class Vector
 public:
     // TODO: think about isfinite
     Vector(double angle, double length) : angle_(angle), length_(length) { }
+    Vector(double dx, double dy, bool settingInDxDy);
 
     void setAngle(double angle);
     void rotate  (double deltaAngle);
@@ -21,8 +22,15 @@ public:
     void setLength(double length);
     void scale    (double deltaLength);
 
-    int getDx () const;
-    int getDy () const;
+    double getDx () const;
+    double getDy () const;
+
+    double getAngle() const;
+    double getLength() const;
+
+    Vector GetNormal() const;
+
+    Vector operator - () const;
 
     Vector operator + (const Vector& other) const;
     Vector operator - (const Vector& other) const;
